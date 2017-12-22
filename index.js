@@ -6,23 +6,20 @@ const app = express()
 const server = app.listen(Number(process.env.SERVER_PORT))
 const io = require('socket.io').listen(server)
 const session = require('express-session')
-const MongoStore = require('connect-mongo')(session)
+const FileStore = require('session-file-store')(session)
 const path = require('path')
 const discord = require('./discord')
 const search = require('./search')
 const VoiceChannel = require('./VoiceChannel')
-const guilds = new Map()
+const guilds = new Discord.Collection()
 
 const sessionMiddleware = session({
-  secret: 'secret',
+  secret: process.env.SESSION_SECRET,
   resave: false,
   saveUninitialized: false,
-  rolling : true,
-  store: new MongoStore({
-    url: 'mongodb://localhost/musicbot',
-    ttl: 60 * 60 * 14 * 24,
-  }),
-  cookie:{
+  rolling: true,
+  store: new FileStore(),
+  cookie: {
     httpOnly: true,
     secure: false,
     maxage: 1000 * 60 * 60 * 24 * 30,
@@ -33,6 +30,12 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'ejs')
 
 app.use(sessionMiddleware)
+
+app.get('/status', (req, res) => res.send({
+  guilds: client.guilds.size,
+  playing: guilds.filter(e => e.playing).size,
+  loadedGuilds: guilds.size,
+}))
 
 app.get('/controller/:id', (req, res) => {
   const channel = client.channels.get(req.params.id)
@@ -102,8 +105,16 @@ io.sockets.on('connection', socket => {
 
 client.on('ready', () => {
   console.log(`Logged in as ${client.user.tag}!`)
+  updateStatus()
 })
 
 client.login(process.env.DISCORD_TOKEN)
+
+function updateStatus() {
+  const all = client.guilds.size
+  const playing = guilds.filter(e => e.playing).size
+  client.user.setGame(playing + '/' + all)
+  setTimeout(() => updateStatus(), 1000)
+}
 
 process.on('unhandledRejection', console.log)

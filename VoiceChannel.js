@@ -51,6 +51,13 @@ class VoiceChannel {
       resolve(volume)
     })
   }
+
+  skip() {
+    return new Promise((resolve, reject) => {
+      if (!this.dispatcher) return reject('再生していません')
+      this.dispatcher.end()
+    })
+  }
 }
 
 module.exports = VoiceChannel
