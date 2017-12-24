@@ -38,12 +38,12 @@ io.sockets.on('connection', socket => {
   socket.on('init', id => {
     const channel = client.channels.get(id)
     if (!channel || channel.type !== 'voice')
-      return socket.emit('err', 'Invalid channel id')
+      return socket.emit('error', 'Invalid channel id')
     const guild = channel.guild
     if (guilds.has(guild.id)) {
       // 同じギルドのボイチャに参加済み
       if (guilds.get(guild.id).id !== channel.id)
-        return socket.emit('err', 'Already joined voice channel')
+        return socket.emit('error', 'Already joined voice channel')
     } else {
       // Botが参加していない
       guilds.set(guild.id, new VoiceChannel(channel, queue => {
@@ -63,28 +63,28 @@ io.sockets.on('connection', socket => {
   socket.on('q', q => {
     search(q)
       .then(data => socket.emit('result', data))
-      .catch(error => socket.emit('err', error))
+      .catch(error => socket.emit('error', error))
   })
 
   socket.on('add', data => {
-    if (!guilds.has(data.guild)) socket.emit('err', '無効なチャンネルID(Invaild ChannelID)')
+    if (!guilds.has(data.guild)) socket.emit('error', '無効なチャンネルID(Invaild ChannelID)')
     else guilds.get(data.guild).add(data)
       .then(list => io.to(data.guild).emit('list', list))
-      .catch(error => socket.emit('err', error))
+      .catch(error => socket.emit('error', error))
   })
 
   socket.on('remove', data => {
-    if (!guilds.has(data.id)) socket.emit('err', '無効なチャンネルID(Invaild ChannelID)')
+    if (!guilds.has(data.id)) socket.emit('error', '無効なチャンネルID(Invaild ChannelID)')
     else guilds.get(data.id).remove(data.index)
       .then(list => io.to(data.id).emit('list', list))
-      .catch(error => socket.emit('err', error))
+      .catch(error => socket.emit('error', error))
   })
 
   socket.on('volume', data => {
-    if (!guilds.has(data.id)) socket.emit('err', '無効なチャンネルID(Invaild ChannelID)')
+    if (!guilds.has(data.id)) socket.emit('error', '無効なチャンネルID(Invaild ChannelID)')
     else guilds.get(data.id).setVolume(data.volume)
       .then(volume => socket.broadcast.to(data.id).emit('volume', volume))
-      .catch(error => socket.emit('err', error))
+      .catch(error => socket.emit('error', error))
   })
 })
 

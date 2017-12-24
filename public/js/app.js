@@ -42,8 +42,8 @@ socket.on('result', data => {
   }
 })
 
-socket.on('err', error => {
-  console.log('socket', 'on', 'err', error)
+socket.on('error', error => {
+  console.log('socket', 'on', 'error', error)
   $('.error').show().text(error).delay(3000).fadeOut()
 })
 
