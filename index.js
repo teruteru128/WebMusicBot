@@ -38,12 +38,12 @@ io.sockets.on('connection', socket => {
   socket.on('init', id => {
     const channel = client.channels.get(id)
     if (!channel || channel.type !== 'voice')
-      return socket.emit('error', 'Invalid channel id')
+      return socket.emit('error', '無効なチャンネルID(Invaild ChannelID)')
     const guild = channel.guild
     if (guilds.has(guild.id)) {
       // 同じギルドのボイチャに参加済み
       if (guilds.get(guild.id).id !== channel.id)
-        return socket.emit('error', 'Already joined voice channel')
+        return socket.emit('error', '既にボイスチャンネルに参加しています(Already joined voice channel)')
     } else {
       // Botが参加していない
       guilds.set(guild.id, new VoiceChannel(channel, queue => {
