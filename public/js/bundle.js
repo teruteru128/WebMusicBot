@@ -35112,19 +35112,18 @@ var render = function() {
                             _vm._v(" "),
                             _c("v-card-text", [
                               _vm._v(
-                                "\r\n              ギルドID: " +
-                                  _vm._s(_vm.guild)
+                                "\n              ギルドID: " + _vm._s(_vm.guild)
                               ),
                               _c("br"),
                               _vm._v(
-                                "\r\n              チャンネル名: " +
+                                "\n              チャンネル名: " +
                                   _vm._s(_vm.channel)
                               ),
                               _c("br"),
                               _vm._v(
-                                "\r\n              チャンネルとの接続状態: " +
+                                "\n              チャンネルとの接続状態: " +
                                   _vm._s(_vm.isConnected) +
-                                  "\r\n            "
+                                  "\n            "
                               )
                             ])
                           ],
@@ -35568,7 +35567,7 @@ var render = function() {
                 }
               },
               [
-                _vm._v("\r\n      " + _vm._s(_vm.snack_message) + "\r\n      "),
+                _vm._v("\n      " + _vm._s(_vm.snack_message) + "\n      "),
                 _c(
                   "v-btn",
                   {
@@ -35604,11 +35603,7 @@ var render = function() {
                       transition: "scale-transition"
                     }
                   },
-                  [
-                    _vm._v(
-                      "\r\n        チャンネルに接続されていません\r\n      "
-                    )
-                  ]
+                  [_vm._v("\n        チャンネルに接続されていません\n      ")]
                 )
               ],
               1
